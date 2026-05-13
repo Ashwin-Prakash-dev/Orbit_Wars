@@ -389,7 +389,7 @@ def dispatch_neutral_expansion(current_step, obs, planet_matrix, planet_radii,
             continue
 
         t_radius       = target_p[4]
-        payload_needed = garrison - inbound + 1   # only cover the remaining gap
+        payload_needed = garrison + 1   # only cover the remaining gap
 
         best_source_id = None
         best_angle     = None
@@ -404,9 +404,9 @@ def dispatch_neutral_expansion(current_step, obs, planet_matrix, planet_radii,
             if s_avail <= 0:
                 continue
 
-            actual_payload = min(payload_needed, s_avail)
-            if actual_payload <= 0:
-                continue
+            if s_avail < payload_needed:
+                continue  # can't afford full capture, skip rather than dribble
+            actual_payload = payload_needed
 
             speed      = 1.0 + 5.0 * ((math.log(max(actual_payload, 1)) / ln_1000) ** 1.5)
             trajectory = planet_matrix.get(t_id)
